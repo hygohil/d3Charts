@@ -3,10 +3,14 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GaugeComponent } from './gauge/gauge.component';
+import { LineChartComponent } from './line-chart/line-chart.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GaugeComponent,
+    LineChartComponent
   ],
   imports: [
     BrowserModule,

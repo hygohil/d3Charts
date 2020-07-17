@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Shape from 'd3';
+
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-gauge',
+  templateUrl: './gauge.component.html',
+  styleUrls: ['./gauge.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class GaugeComponent implements OnInit {
   gaugemap = {};
   data: any[] = [
     { date: new Date('2010-01-01'), value: 40 },
@@ -19,15 +20,13 @@ export class AppComponent implements OnInit {
     { date: new Date('2010-01-10'), value: 107 },
     { date: new Date('2010-01-11'), value: 140 },
   ];
-  dynamicValue = {
-    achieved: '$ 7500',
-    price: '+ $1000',
-    low: '$ 5k',
-    score: 0,
-    high: '$ 10k',
-    minValue: 0,
-    maxValue: 10,
-  };
+  dynamicValue = {   achieved: '$ 7500',
+  price: '+ $1000',
+  low: '$ 5k',
+  score: 6,
+  high: '$ 10k',
+  minValue: 0,
+  maxValue: 10, };
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
   private width: number;
   private height: number;
@@ -37,6 +36,15 @@ export class AppComponent implements OnInit {
   private line: d3Shape.Line<[number, number]>; // this is line defination
 
   constructor() {
+    this.dynamicValue = {
+      achieved: '$ 7500',
+      price: '+ $1000',
+      low: '$ 5k',
+      score: 6,
+      high: '$ 10k',
+      minValue: 0,
+      maxValue: 10,
+    };
     // configure margins and width/height of the graph
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
@@ -104,7 +112,6 @@ export class AppComponent implements OnInit {
         range = config.maxAngle - config.minAngle;
         r = config.size / 2;
         pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
-
         // a linear scale this.gaugemap maps domain values to a percent from 0..1
         scale = d3
           .scaleLinear()
@@ -141,6 +148,7 @@ export class AppComponent implements OnInit {
       self.gaugemap.isRendered = isRendered;
 
       function render(newValue) {
+       
         svg = d3
           .select(container)
           .append('svg:svg')
@@ -212,6 +220,7 @@ export class AppComponent implements OnInit {
         if (newConfiguration !== undefined) {
           configure(newConfiguration);
         }
+
         var ratio = scale(newValue);
         var newAngle = config.minAngle + ratio * range;
         pointer
@@ -219,7 +228,9 @@ export class AppComponent implements OnInit {
           .duration(config.transitionMs)
           .ease(d3.easeElastic)
           .attr('transform', 'rotate(' + newAngle + ')');
+     
       }
+      console.log(update);
       self.gaugemap.update = update;
 
       configure(configuration);
@@ -235,6 +246,6 @@ export class AppComponent implements OnInit {
       maxValue: 10,
       transitionMs: 4000,
     });
-    powerGauge.render(6);
+    powerGauge.render(this.dynamicValue.score);
   }
 }
