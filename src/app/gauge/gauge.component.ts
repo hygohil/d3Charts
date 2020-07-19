@@ -61,8 +61,8 @@ export class GaugeComponent implements OnInit {
         clipHeight: 110,
         ringInset: 20,
         ringWidth: 20,
-        pointerWidth: 10,
-        pointerTailLength: 5,
+        pointerWidth: 20,
+        pointerTailLength: 4,
         pointerHeadLengthPercent: 0.9,
         minValue: this.dynamicValue.minValue,
         maxValue: this.dynamicValue.maxValue,
@@ -210,6 +210,7 @@ export class GaugeComponent implements OnInit {
           [config.pointerWidth / 2, 0],
         ];
         var pointerLine = d3.line().curve(d3.curveLinear);
+        console.log(pointerLine);
         var pg = svg
           .append('g')
           .data([lineData])
@@ -242,7 +243,7 @@ export class GaugeComponent implements OnInit {
     var powerGauge: any = gauge('#power-gauge', {
       size: 300,
       clipWidth: 300,
-      clipHeight: 300,
+      clipHeight: 200,
       ringWidth: 60,
       maxValue: 10,
       transitionMs: 4000,
