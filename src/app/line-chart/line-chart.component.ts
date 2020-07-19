@@ -13,14 +13,14 @@ export class LineChartComponent implements OnInit {
   public title = 'Line Chart';
   data: any[] = [
     { date: new Date('2010-01-01'), value: 40 },
-    { date: new Date('2010-01-04'), value: 120 },
-    { date: new Date('2010-01-05'), value: 98 },
-    { date: new Date('2010-01-06'), value: 130 },
-    { date: new Date('2010-01-07'), value: 110 },
+    { date: new Date('2010-01-04'), value: 60 },
+    { date: new Date('2010-01-05'), value: 90 },
+    { date: new Date('2010-01-06'), value: 20 },
+    { date: new Date('2010-01-07'), value: 100 },
     { date: new Date('2010-01-08'), value: 70 },
-    { date: new Date('2010-01-09'), value: 130 },
-    { date: new Date('2010-01-10'), value: 107 },
-    { date: new Date('2010-01-11'), value: 140 },
+    { date: new Date('2010-01-09'), value: 110 },
+    { date: new Date('2010-01-10'), value: 55 },
+    { date: new Date('2010-01-11'), value: 130 },
   ];
 
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -114,7 +114,10 @@ export class LineChartComponent implements OnInit {
       .data(this.data)
       .enter()
       .append('circle')
-      .attr('fill', '#2BCC71')
+      .attr('fill', function (d, i) {
+        // return d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
+        return d.value < 50 ? '#FF5A5A' : d.value >= 50 && d.value < 100 ? '#F2C91D' : '#2BCC71';
+      })
       .attr('cx', (d) => this.x(d.date))
       .attr('cy', (d) => this.y(d.value))
       .attr('r', 3);
