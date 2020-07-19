@@ -1,4 +1,4 @@
-<div class="container my-4">
+<!-- <div class="container my-4">
   <div class="row">
     <div class="col">
       <div id="low">{{dynamicValue?.achieved}}</div><br />
@@ -28,4 +28,50 @@
   </div>
 </div>
   
-</div> 
+</div>  -->
+
+<div class="row">
+  <div class="col-md-3 mt-1"></div>
+  <div class="col-md-6 mt-1">
+    <div class="card card-inverse text-center">
+      <div class="card-body">
+        <div class="card-block p-3">
+          <div class="row">
+            <div class="col-sm">
+              <h5 id="low" class="font-weight">{{dynamicValue?.achieved}}</h5>
+              <span>Achieved</span>
+            </div>
+            <div class="col-sm">
+
+            </div>
+            <div class="col-sm">
+              <div id="low" class="achieved-gain">{{dynamicValue?.price}}</div><br />
+            </div>
+          </div>
+          <br>
+          <br>
+          <div class="row">
+            <div class="col-sm guage-font">
+              <div id="power-gauge" class="gauge-chart"></div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm ">
+              <h5 id="low" class="font-weight">{{dynamicValue?.low}}</h5>
+              <span>LOW</span>
+            </div>
+            <div class="col-sm">
+              <h5 id="score" class="font-weight">{{dynamicValue?.score}}</h5>
+              <span>SCORE</span>
+            </div>
+            <div class="col-sm">
+              <h5 id="high" class="font-weight"> {{dynamicValue?.high}}</h5>
+              <span>HIGH</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

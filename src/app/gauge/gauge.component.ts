@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Shape from 'd3';
-
 @Component({
   selector: 'app-gauge',
   templateUrl: './gauge.component.html',
@@ -36,7 +35,6 @@ export class GaugeComponent implements OnInit {
   private y: any;
   private svg: any;
   private line: d3Shape.Line<[number, number]>; // this is line defination
-
   constructor() {
     this.dynamicValue = {
       achieved: '$ 7500',
@@ -54,7 +52,6 @@ export class GaugeComponent implements OnInit {
   public ngOnInit(): void {
     this.draw();
   }
-
   draw() {
     var self: any = this;
     var gauge = (container, configuration) => {
@@ -64,53 +61,43 @@ export class GaugeComponent implements OnInit {
         clipHeight: 110,
         ringInset: 20,
         ringWidth: 20,
-
         pointerWidth: 10,
         pointerTailLength: 5,
         pointerHeadLengthPercent: 0.9,
-
         minValue: this.dynamicValue.minValue,
         maxValue: this.dynamicValue.maxValue,
-
         minAngle: -90,
         maxAngle: 90,
-
         transitionMs: 750,
-
-        majorTicks: 5,
+        majorTicks: 10,
         labelFormat: d3.format('d'),
         labelInset: 10,
-
         arcColorFn: d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a')),
       };
       var range = undefined;
       var r = undefined;
       var pointerHeadLength = undefined;
       var value = 0;
-
       var svg = undefined;
       var arc = undefined;
+      var arc2 = undefined;
       var scale = undefined;
       var ticks = undefined;
       var tickData = undefined;
       var pointer = undefined;
-
       function deg2rad(deg) {
         return (deg * Math.PI) / 180;
       }
-
       function newAngle(d) {
         var ratio = scale(d);
         var newAngle = config.minAngle + ratio * range;
         return newAngle;
       }
-
       function configure(configuration) {
         let prop = undefined;
         for (prop in configuration) {
           config[prop] = configuration[prop];
         }
-
         range = config.maxAngle - config.minAngle;
         r = config.size / 2;
         pointerHeadLength = Math.round(r * config.pointerHeadLengthPercent);
@@ -119,16 +106,29 @@ export class GaugeComponent implements OnInit {
           .scaleLinear()
           .range([0, 1])
           .domain([config.minValue, config.maxValue]);
-
         ticks = scale.ticks(config.majorTicks);
         tickData = d3.range(config.majorTicks).map(function () {
           return 1 / config.majorTicks;
         });
+        console.log(ticks);
 
+        console.log(tickData);
         arc = d3
           .arc()
-          .innerRadius(r - config.ringWidth - config.ringInset)
-          .outerRadius(r - config.ringInset)
+          .innerRadius(115)
+          .outerRadius(70)
+          .startAngle(function (d: any, i) {
+            var ratio: any = d * i;
+            return deg2rad(config.minAngle + ratio * range);
+          })
+          .endAngle(function (d: any, i) {
+            var ratio: any = d * (i + 1);
+            return deg2rad(config.minAngle + ratio * range);
+          });
+        arc2 = d3
+          .arc()
+          .innerRadius(130)
+          .outerRadius(120)
           .startAngle(function (d: any, i) {
             var ratio: any = d * i;
             return deg2rad(config.minAngle + ratio * range);
@@ -139,16 +139,13 @@ export class GaugeComponent implements OnInit {
           });
       }
       self.gaugemap.configure = configure;
-
       function centerTranslation() {
         return 'translate(' + r + ',' + r + ')';
       }
-
       function isRendered() {
         return svg !== undefined;
       }
       self.gaugemap.isRendered = isRendered;
-
       function render(newValue) {
         svg = d3
           .select(container)
@@ -156,24 +153,35 @@ export class GaugeComponent implements OnInit {
           .attr('class', 'gauge')
           .attr('width', config.clipWidth)
           .attr('height', config.clipHeight);
-
         var centerTx = centerTranslation();
-
         var arcs = svg
           .append('g')
           .attr('class', 'arc')
           .attr('transform', centerTx);
-
+        var arcs2 = svg
+          .append('g')
+          .attr('class', 'arc')
+          .attr('transform', centerTx);
         arcs
           .selectAll('path')
           .data(tickData)
           .enter()
           .append('path')
           .attr('fill', function (d, i) {
-            return config.arcColorFn(d * i);
+            console.log(d);
+            return i < 3 ? '#D3D3D3' : i >= 3 && i < 7 ? '#F2C91D' : '#D3D3D3';
           })
           .attr('d', arc);
-
+        arcs2
+          .selectAll('path')
+          .data(tickData)
+          .enter()
+          .append('path')
+          .attr('fill', function (d, i) {
+            console.log(d);
+            return i < 3 ? '#FF5A5A' : i >= 3 && i < 7 ? '#F2C91D' : '#2BCC71';
+          })
+          .attr('d', arc2);
         var lg = svg
           .append('g')
           .attr('class', 'label')
@@ -194,7 +202,6 @@ export class GaugeComponent implements OnInit {
             );
           })
           .text(config.labelFormat);
-
         var lineData = [
           [config.pointerWidth / 2, 0],
           [0, -pointerHeadLength],
@@ -208,12 +215,10 @@ export class GaugeComponent implements OnInit {
           .data([lineData])
           .attr('class', 'pointer')
           .attr('transform', centerTx);
-
         pointer = pg
           .append('path')
           .attr('d', pointerLine /*function(d) { return pointerLine(d) +'Z';}*/)
           .attr('transform', 'rotate(' + config.minAngle + ')');
-
         update(newValue === undefined ? 0 : newValue);
       }
       self.gaugemap.render = render;
@@ -221,7 +226,6 @@ export class GaugeComponent implements OnInit {
         if (newConfiguration !== undefined) {
           configure(newConfiguration);
         }
-
         var ratio = scale(newValue);
         var newAngle = config.minAngle + ratio * range;
         pointer
@@ -232,12 +236,9 @@ export class GaugeComponent implements OnInit {
       }
       console.log(update);
       self.gaugemap.update = update;
-
       configure(configuration);
-
       return self.gaugemap;
     };
-
     var powerGauge: any = gauge('#power-gauge', {
       size: 300,
       clipWidth: 300,
