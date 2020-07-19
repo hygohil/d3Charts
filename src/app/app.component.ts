@@ -120,12 +120,12 @@ export class AppComponent implements OnInit {
           .arc()
           .innerRadius(r - config.ringWidth - config.ringInset)
           .outerRadius(r - config.ringInset)
-          .startAngle(function (d, i) {
-            var ratio = d * i;
+          .startAngle(function (d: any, i) {
+            var ratio: any = d * i;
             return deg2rad(config.minAngle + ratio * range);
           })
-          .endAngle(function (d, i) {
-            var ratio = d * (i + 1);
+          .endAngle(function (d: any, i) {
+            var ratio: any = d * (i + 1);
             return deg2rad(config.minAngle + ratio * range);
           });
       }

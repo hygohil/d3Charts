@@ -20,13 +20,15 @@ export class GaugeComponent implements OnInit {
     { date: new Date('2010-01-10'), value: 107 },
     { date: new Date('2010-01-11'), value: 140 },
   ];
-  dynamicValue = {   achieved: '$ 7500',
-  price: '+ $1000',
-  low: '$ 5k',
-  score: 6,
-  high: '$ 10k',
-  minValue: 0,
-  maxValue: 10, };
+  dynamicValue = {
+    achieved: '$ 7500',
+    price: '+ $1000',
+    low: '$ 5k',
+    score: 6,
+    high: '$ 10k',
+    minValue: 0,
+    maxValue: 10,
+  };
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
   private width: number;
   private height: number;
@@ -127,12 +129,12 @@ export class GaugeComponent implements OnInit {
           .arc()
           .innerRadius(r - config.ringWidth - config.ringInset)
           .outerRadius(r - config.ringInset)
-          .startAngle(function (d, i) {
-            var ratio = d * i;
+          .startAngle(function (d: any, i) {
+            var ratio: any = d * i;
             return deg2rad(config.minAngle + ratio * range);
           })
-          .endAngle(function (d, i) {
-            var ratio = d * (i + 1);
+          .endAngle(function (d: any, i) {
+            var ratio: any = d * (i + 1);
             return deg2rad(config.minAngle + ratio * range);
           });
       }
@@ -148,7 +150,6 @@ export class GaugeComponent implements OnInit {
       self.gaugemap.isRendered = isRendered;
 
       function render(newValue) {
-       
         svg = d3
           .select(container)
           .append('svg:svg')
@@ -228,7 +229,6 @@ export class GaugeComponent implements OnInit {
           .duration(config.transitionMs)
           .ease(d3.easeElastic)
           .attr('transform', 'rotate(' + newAngle + ')');
-     
       }
       console.log(update);
       self.gaugemap.update = update;

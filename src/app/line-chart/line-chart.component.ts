@@ -55,18 +55,36 @@ export class LineChartComponent implements OnInit {
     // range of data configuring
     this.x = d3Scale.scaleTime().range([0, this.width]);
     this.y = d3Scale.scaleLinear().range([this.height, 0]);
-    this.x.domain(d3Array.extent(this.data, (d) => d.date));
-    this.y.domain(d3Array.extent(this.data, (d) => d.value));
+    // this.x.domain(d3Array.extent(this.data, (d) => d.date));
+    // this.y.domain(d3Array.extent(this.data, (d) => d.value));
+
+    this.x.domain(
+      d3.extent(this.data, function (d) {
+        return d.date;
+      })
+    );
+    this.y.domain([
+      0,
+      d3.max(this.data, function (d) {
+        return d.value;
+      }),
+    ]);
+
     // Configure the X Axis
     this.svg
       .append('g')
+      .attr('class', 'grid')
       .attr('transform', 'translate(0,' + this.height + ')')
-      .call(d3Axis.axisBottom(this.x));
+      .call(d3Axis.axisBottom(this.x).tickSize(-this.height).tickFormat(null))
+      .attr('fill', '#F1F2F5')
+      .attr('fill-opacity', 0.4);
     // Configure the Y Axis
     this.svg
       .append('g')
-      .attr('class', 'axis axis--y')
-      .call(d3Axis.axisLeft(this.y));
+      .attr('class', 'grid')
+      .attr('fill', '#F1F2F5')
+      .attr('fill-opacity', 0.4)
+      .call(d3Axis.axisLeft(this.y).tickSize(-this.width).tickFormat(null));
   }
 
   private drawLineAndPath() {
@@ -84,7 +102,7 @@ export class LineChartComponent implements OnInit {
       .append('path')
       .attr('stroke-dasharray', `${5},${5}`)
       .datum(this.data)
-      .attr('class', 'line')
+      .attr('class', 'area')
       .attr('d', this.line)
       .attr('fill', '#89cff0')
       .attr('fill-opacity', 0.3)
