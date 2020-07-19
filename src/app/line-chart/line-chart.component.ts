@@ -77,13 +77,17 @@ export class LineChartComponent implements OnInit {
       .attr('transform', 'translate(0,' + this.height + ')')
       .call(d3Axis.axisBottom(this.x).tickSize(-this.height).tickFormat(null))
       .attr('fill', '#F1F2F5')
-      .attr('fill-opacity', 0.4);
+      // .attr('fill-opacity', 0.4)
+      .attr('stroke-dasharray', `${5},${5}`)
+      .attr('stroke-width', 0.3);
     // Configure the Y Axis
     this.svg
       .append('g')
       .attr('class', 'grid')
       .attr('fill', '#F1F2F5')
-      .attr('fill-opacity', 0.4)
+      // .attr('fill-opacity', 0.4)
+      .attr('stroke-dasharray', `${5},${5}`)
+      .attr('stroke-width', 0.3)
       .call(d3Axis.axisLeft(this.y).tickSize(-this.width).tickFormat(null));
   }
 
@@ -93,10 +97,6 @@ export class LineChartComponent implements OnInit {
       .x((d: any) => this.x(d.date))
       .y1((d: any) => this.y(d.value))
       .y0(this.height);
-    // .x(function(d) { return x(d.date) })
-    // .y0( this.height )
-    // .y1(function(d) { return y(d.value) })
-    // )
     // Configuring line path
     this.svg
       .append('path')
