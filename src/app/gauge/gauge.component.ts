@@ -19,6 +19,7 @@ export class GaugeComponent implements OnInit {
     { date: new Date('2010-01-10'), value: 107 },
     { date: new Date('2010-01-11'), value: 140 },
   ];
+
   dynamicValue = {
     achieved: '$ 7500',
     price: '+ $1000',
@@ -28,6 +29,7 @@ export class GaugeComponent implements OnInit {
     minValue: 0,
     maxValue: 10,
   };
+
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
   private width: number;
   private height: number;

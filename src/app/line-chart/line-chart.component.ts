@@ -92,6 +92,11 @@ export class LineChartComponent implements OnInit {
   }
 
   private drawLineAndPath() {
+    var div = d3
+      .select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
     this.line = d3Shape
       .area()
       .x((d: any) => this.x(d.date))
@@ -110,17 +115,31 @@ export class LineChartComponent implements OnInit {
       .attr('stroke-width', 2);
 
     this.svg
-      .selectAll('myCircles')
+      .selectAll('dot')
       .data(this.data)
       .enter()
       .append('circle')
+      .on('mouseover', function (d) {
+        div.transition().duration(2000).style('opacity', 0.9);
+        div
+          .html(d.date + '<br/>' + d.value)
+          .style('left', d3.event.pageX + 'px')
+          .style('top', d3.event.pageY - 28 + 'px');
+      })
+      .on('mouseout', function (d) {
+        div.transition().duration(5000).style('opacity', 0);
+      })
       .attr('fill', function (d, i) {
         // return d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
-        return d.value < 50 ? '#FF5A5A' : d.value >= 50 && d.value < 100 ? '#F2C91D' : '#2BCC71';
+        return d.value < 50
+          ? '#FF5A5A'
+          : d.value >= 50 && d.value < 100
+          ? '#F2C91D'
+          : '#2BCC71';
       })
       .attr('cx', (d) => this.x(d.date))
       .attr('cy', (d) => this.y(d.value))
-      .attr('r', 3);
+      .attr('r', 5);
   }
 
   // function for the x grid lines

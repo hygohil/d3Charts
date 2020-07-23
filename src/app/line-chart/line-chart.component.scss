@@ -1,5 +1,5 @@
 body {
-    font: 12px Arial;
+  font: 12px Arial;
 }
 
 text.shadow {
@@ -8,30 +8,75 @@ text.shadow {
   opacity: 0.9;
 }
 
-path { 
-    stroke: steelblue;
-    stroke-width: 2;
-    fill: none;
+path {
+  stroke: steelblue;
+  stroke-width: 2;
+  fill: none;
 }
 
 .axis path,
 .axis line {
-    fill: none;
-    stroke: grey;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
+  fill: none;
+  stroke: grey;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
 }
 
 .grid .tick {
-    stroke: lightgrey;
-    stroke-opacity: 0.7;
-    shape-rendering: crispEdges;
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
 }
 .grid path {
-          stroke-width: 0;
+  stroke-width: 0;
 }
 
 .area {
-    fill: lightsteelblue;
-      stroke-width: 0;
+  fill: lightsteelblue;
+  stroke-width: 0;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: pink;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+.bubble {
+  height: 80px;
+  width: 7%;
+  background: ivory;
+  display: block;
+  margin: 0 auto;
+  border-radius: 20px;
+  margin-top: 50px;
+  font-size: 14px;
+  text-align: center;
+  padding: 5px;
+}
+
+.pointer {
+  height: 30px;
+  width: 42px;
+  background: ivory;
+  margin: 0 auto;
+  transform: rotate(45deg);
+  border-radius: 0 0 12px 0;
+  margin-top: -22px;
+  position: relative;
+  left: calc(2.5vw - 50px);
+}
+
+.blurred {
+  background: rgb(194, 188, 188);
+  filter: blur(10px);
+  position: relative;
+  top: -135px;
+  z-index: -1;
 }
