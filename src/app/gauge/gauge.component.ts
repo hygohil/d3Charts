@@ -52,6 +52,7 @@ export class GaugeComponent implements OnInit {
     this.height = 500 - this.margin.top - this.margin.bottom;
   }
   public ngOnInit(): void {
+    console.log('app-gauge');
     this.draw();
   }
   draw() {

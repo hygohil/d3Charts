@@ -1,15 +1,8 @@
-
- <br>
- <br>
-<ul class="nav-tabs">
-  <li class="active">
-    <a href="#" [routerLink]="'/gauge-chart'">Gauge Chart</a>
-  </li>
-  <li class="active">
-    <a href="#" [routerLink]="'/line-chart'">Line Chart</a>
-  </li>
-</ul>
-
-<div>
-  <router-outlet></router-outlet>
+<div class="row ">
+  <div class="col-sm-8">
+    <app-line-chart></app-line-chart>
+  </div>
+  <div class="col-sm-4 line-padding">
+    <app-gauge></app-gauge>
+  </div>
 </div>

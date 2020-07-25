@@ -7,16 +7,12 @@ import { GaugeComponent } from './gauge/gauge.component';
 import { LineChartComponent } from './line-chart/line-chart.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    GaugeComponent,
-    LineChartComponent
-  ],
+  declarations: [AppComponent, GaugeComponent, LineChartComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    // AppRoutingModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
