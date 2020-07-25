@@ -1,2 +1,14 @@
-<svg width="900" height="500">
-</svg>
+<div class="row">
+    <div class="col">
+        <svg width="900" height="500">
+        </svg>
+    </div>
+</div>
+<div>
+    <div class="col">
+        <select [formControl]='selectedValue' (change)="onValueChange($event.target.value)">
+            <option [value]="month" *ngFor="let month of months">{{month}}</option>
+        </select>
+        <br>
+    </div>
+</div>

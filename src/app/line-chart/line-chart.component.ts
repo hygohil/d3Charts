@@ -2,27 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Scale from 'd3';
 import * as d3Shape from 'd3';
-import * as d3Array from 'd3';
 import * as d3Axis from 'd3';
+import { FormControl } from '@angular/forms';
+import moment from 'moment';
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss'],
 })
 export class LineChartComponent implements OnInit {
+  selectedValue: FormControl;
   public title = 'Line Chart';
   data: any[] = [
-    { date: new Date('2010-01-01'), value: 40 },
-    { date: new Date('2010-01-04'), value: 60 },
-    { date: new Date('2010-01-05'), value: 90 },
-    { date: new Date('2010-01-06'), value: 20 },
-    { date: new Date('2010-01-07'), value: 100 },
-    { date: new Date('2010-01-08'), value: 70 },
-    { date: new Date('2010-01-09'), value: 110 },
-    { date: new Date('2010-01-10'), value: 55 },
-    { date: new Date('2010-01-11'), value: 130 },
+    { date: new Date('2020-01-01'), value: 40 },
+    { date: new Date('2020-02-04'), value: 60 },
+    { date: new Date('2020-03-05'), value: 90 },
+    { date: new Date('2020-04-06'), value: 20 },
+    { date: new Date('2020-05-07'), value: 100 },
+    { date: new Date('2020-01-08'), value: 70 },
+    { date: new Date('2020-01-09'), value: 110 },
+    { date: new Date('2020-01-10'), value: 55 },
+    { date: new Date('2020-01-11'), value: 130 },
   ];
-
+  months = [];
+  historyData;
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
   private width: number;
   private height: number;
@@ -35,8 +38,17 @@ export class LineChartComponent implements OnInit {
     // configure margins and width/height of the graph
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
+    console.log('height', this.height, 'widhth', this.width);
+    this.months = this.data.reduce((accm, dataItem) => {
+      const date = moment(dataItem.date).format('MMM YYYY');
+      return accm.includes(date) ? accm : [...accm, date];
+    }, []);
+    console.log(this.data);
+    this.historyData = Object.assign([], this.data);
+    // this.selectedValue.setValue(this.historyData[0].month)
   }
   public ngOnInit(): void {
+    this.selectedValue = new FormControl();
     this.buildSvg();
     this.addXandYAxis();
     this.drawLineAndPath();
@@ -49,15 +61,15 @@ export class LineChartComponent implements OnInit {
       .attr(
         'transform',
         'translate(' + this.margin.left + ',' + this.margin.top + ')'
-      );
+      )
+      .attr('id', 55);
   }
+
   private addXandYAxis() {
     // range of data configuring
     this.x = d3Scale.scaleTime().range([0, this.width]);
     this.y = d3Scale.scaleLinear().range([this.height, 0]);
-    // this.x.domain(d3Array.extent(this.data, (d) => d.date));
-    // this.y.domain(d3Array.extent(this.data, (d) => d.value));
-
+    console.log('new', this.data);
     this.x.domain(
       d3.extent(this.data, function (d) {
         return d.date;
@@ -69,7 +81,8 @@ export class LineChartComponent implements OnInit {
         return d.value;
       }),
     ]);
-
+    console.log('new', this.x);
+    console.log('new', this.y);
     // Configure the X Axis
     this.svg
       .append('g')
@@ -92,7 +105,7 @@ export class LineChartComponent implements OnInit {
   }
 
   private drawLineAndPath() {
-    var div = d3
+    let div: any = d3
       .select('body')
       .append('div')
       .attr('class', 'tooltip')
@@ -130,7 +143,6 @@ export class LineChartComponent implements OnInit {
         div.transition().duration(5000).style('opacity', 0);
       })
       .attr('fill', function (d, i) {
-        // return d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a'));
         return d.value < 50
           ? '#FF5A5A'
           : d.value >= 50 && d.value < 100
@@ -142,20 +154,17 @@ export class LineChartComponent implements OnInit {
       .attr('r', 5);
   }
 
-  // function for the x grid lines
-  private make_x_axis() {
-    return this.svg.axis().scale(this.x).orient('bottom').ticks(5);
-  }
-
-  // function for the y grid lines
-  private make_y_axis() {
-    return this.svg.axis().scale(this.y).orient('left').ticks(5);
-  }
-
-  private xAxis() {
-    return this.svg.axis().scale(this.x).orient('bottom').ticks(5);
-  }
-  private yAxis() {
-    return this.svg.axis().scale(this.y).orient('left').ticks(5);
+  public async onValueChange($ev: any) {
+    this.data = [];
+    this.svg = undefined;
+    this.x = undefined;
+    this.y = undefined;
+    this.line = undefined;
+    this.data = await this.historyData.filter(
+      (historyItem) => $ev === moment(historyItem.date).format('MMM YYYY')
+    );
+    this.buildSvg();
+    this.addXandYAxis();
+    this.drawLineAndPath();
   }
 }
