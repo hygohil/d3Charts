@@ -170,7 +170,7 @@ export class LineChartComponent implements OnInit {
       (historyItem: any) => $ev === moment(historyItem.date).format('MMM YYYY')
     );
 
-    d3.selectAll("g > *").remove()
+    d3.select("#line-charts").selectAll("g > *").remove()
 
     this.buildSvg();
     this.addXandYAxis();
