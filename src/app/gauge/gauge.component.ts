@@ -13,7 +13,7 @@ export class GaugeComponent implements OnInit {
     achieved: '$ 7500',
     price: '+ $1000',
     low: '$ 5k',
-    score: 6,
+    score: 2,
     high: '$ 10k',
     minValue: 0,
     maxValue: 10,
@@ -32,7 +32,7 @@ export class GaugeComponent implements OnInit {
       achieved: '$ 7500',
       price: '+ $1000',
       low: '$ 5k',
-      score: 6,
+      score: 2,
       high: '$ 10k',
       minValue: 0,
       maxValue: 10,
@@ -93,6 +93,8 @@ export class GaugeComponent implements OnInit {
           COMPANY_ID: 3,
         },
       ]
+
+      var defaultColor = '#D3D3D3'
 
       var range = undefined;
       var r = undefined;
@@ -187,7 +189,19 @@ export class GaugeComponent implements OnInit {
           .enter()
           .append('path')
           .attr('fill', function (d, i) {
-            return i < 3 ? '#D3D3D3' : i >= 3 && i < 7 ? '#F2C91D' : '#D3D3D3';
+            const [firstPart, secondPart, thirdPart] = colorFormat
+
+            // return i < 3 ? '#D3D3D3' : i >= 3 && i < 7 ? '#F2C91D' : '#D3D3D3';
+
+            if (firstPart.SCORE_FROM >= newValue || newValue <= firstPart.SCORE_TO) {
+              return firstPart.SCORE_FROM >= i || i <= firstPart.SCORE_TO ? firstPart.COLOR : defaultColor
+            }
+            else if (secondPart.SCORE_FROM >= newValue || newValue <= secondPart.SCORE_TO) {
+              return secondPart.SCORE_FROM >= i || i <= secondPart.SCORE_TO ? secondPart.COLOR : defaultColor
+            }
+            else if (thirdPart.SCORE_FROM >= newValue || newValue <= thirdPart.SCORE_TO) {
+              return thirdPart.SCORE_FROM >= i || i <= thirdPart.SCORE_TO ? thirdPart.COLOR : defaultColor
+            }
           })
           .attr('d', arc);
         arcs2
@@ -274,7 +288,7 @@ export class GaugeComponent implements OnInit {
       maxValue: 10,
       transitionMs: 4000,
     });
-    
+
     powerGauge.render(this.dynamicValue.score);
   }
 }
