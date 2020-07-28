@@ -47,7 +47,6 @@ export class LineChartComponent implements OnInit {
     }, []);
 
     this.historyData = Object.assign([], this.data);
-
   }
 
   public ngOnInit(): void {
