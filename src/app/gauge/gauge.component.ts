@@ -8,17 +8,6 @@ import * as d3Shape from 'd3';
 })
 export class GaugeComponent implements OnInit {
   gaugemap = {};
-  data: any[] = [
-    { date: new Date('2010-01-01'), value: 40 },
-    { date: new Date('2010-01-04'), value: 93 },
-    { date: new Date('2010-01-05'), value: 98 },
-    { date: new Date('2010-01-06'), value: 130 },
-    { date: new Date('2010-01-07'), value: 110 },
-    { date: new Date('2010-01-08'), value: 120 },
-    { date: new Date('2010-01-09'), value: 129 },
-    { date: new Date('2010-01-10'), value: 107 },
-    { date: new Date('2010-01-11'), value: 140 },
-  ];
 
   dynamicValue = {
     achieved: '$ 7500',
@@ -37,7 +26,7 @@ export class GaugeComponent implements OnInit {
   private y: any;
   private svg: any;
   private line: d3Shape.Line<[number, number]>; // this is line defination
-  
+
   constructor() {
     this.dynamicValue = {
       achieved: '$ 7500',
@@ -52,14 +41,14 @@ export class GaugeComponent implements OnInit {
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
   }
-  
+
   public ngOnInit(): void {
     this.draw();
   }
 
   draw() {
     var self: any = this;
-    
+
     var gauge = (container, configuration) => {
       var config = {
         size: 710,
@@ -80,7 +69,31 @@ export class GaugeComponent implements OnInit {
         labelInset: 10,
         arcColorFn: d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a')),
       };
-      
+
+      var colorFormat = [
+        {
+          ID: 1,
+          SCORE_FROM: 0.0,
+          SCORE_TO: 3.33,
+          COLOR: '#FF5A5A',
+          COMPANY_ID: 3,
+        },
+        {
+          ID: 2,
+          SCORE_FROM: 3.34,
+          SCORE_TO: 6.66,
+          COLOR: '#F2C91D', //'#EDB612',
+          COMPANY_ID: 3,
+        },
+        {
+          ID: 3,
+          SCORE_FROM: 6.67,
+          SCORE_TO: 10.0,
+          COLOR: '#2BCC71',
+          COMPANY_ID: 3,
+        },
+      ]
+
       var range = undefined;
       var r = undefined;
       var pointerHeadLength = undefined;
@@ -183,7 +196,12 @@ export class GaugeComponent implements OnInit {
           .enter()
           .append('path')
           .attr('fill', function (d, i) {
-            return i < 3 ? '#FF5A5A' : i >= 3 && i < 7 ? '#F2C91D' : '#2BCC71';
+
+            const [firstPart, secondPart, thirdPart] = colorFormat
+
+            return firstPart.SCORE_FROM >= i || i <= firstPart.SCORE_TO ? firstPart.COLOR
+              : secondPart.SCORE_FROM >= i || i <= secondPart.SCORE_TO ? secondPart.COLOR
+                : thirdPart.SCORE_FROM >= i || i <= thirdPart.SCORE_TO ? thirdPart.COLOR : null
           })
           .attr('d', arc2);
         var lg = svg
