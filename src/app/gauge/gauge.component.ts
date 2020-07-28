@@ -37,6 +37,7 @@ export class GaugeComponent implements OnInit {
   private y: any;
   private svg: any;
   private line: d3Shape.Line<[number, number]>; // this is line defination
+  
   constructor() {
     this.dynamicValue = {
       achieved: '$ 7500',
@@ -51,12 +52,14 @@ export class GaugeComponent implements OnInit {
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
   }
+  
   public ngOnInit(): void {
-    console.log('app-gauge');
     this.draw();
   }
+
   draw() {
     var self: any = this;
+    
     var gauge = (container, configuration) => {
       var config = {
         size: 710,
@@ -77,6 +80,7 @@ export class GaugeComponent implements OnInit {
         labelInset: 10,
         arcColorFn: d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a')),
       };
+      
       var range = undefined;
       var r = undefined;
       var pointerHeadLength = undefined;
@@ -88,14 +92,11 @@ export class GaugeComponent implements OnInit {
       var ticks = undefined;
       var tickData = undefined;
       var pointer = undefined;
+
       function deg2rad(deg) {
         return (deg * Math.PI) / 180;
       }
-      function newAngle(d) {
-        var ratio = scale(d);
-        var newAngle = config.minAngle + ratio * range;
-        return newAngle;
-      }
+
       function configure(configuration) {
         let prop = undefined;
         for (prop in configuration) {
@@ -113,9 +114,6 @@ export class GaugeComponent implements OnInit {
         tickData = d3.range(config.majorTicks).map(function () {
           return 1 / config.majorTicks;
         });
-        console.log(ticks);
-
-        console.log(tickData);
         arc = d3
           .arc()
           .innerRadius(115)
@@ -141,14 +139,19 @@ export class GaugeComponent implements OnInit {
             return deg2rad(config.minAngle + ratio * range);
           });
       }
+
       self.gaugemap.configure = configure;
+
       function centerTranslation() {
         return 'translate(' + r + ',' + r + ')';
       }
+
       function isRendered() {
         return svg !== undefined;
       }
+
       self.gaugemap.isRendered = isRendered;
+
       function render(newValue) {
         svg = d3
           .select(container)
@@ -171,7 +174,6 @@ export class GaugeComponent implements OnInit {
           .enter()
           .append('path')
           .attr('fill', function (d, i) {
-            console.log(d);
             return i < 3 ? '#D3D3D3' : i >= 3 && i < 7 ? '#F2C91D' : '#D3D3D3';
           })
           .attr('d', arc);
@@ -181,7 +183,6 @@ export class GaugeComponent implements OnInit {
           .enter()
           .append('path')
           .attr('fill', function (d, i) {
-            console.log(d);
             return i < 3 ? '#FF5A5A' : i >= 3 && i < 7 ? '#F2C91D' : '#2BCC71';
           })
           .attr('d', arc2);
@@ -213,7 +214,6 @@ export class GaugeComponent implements OnInit {
           [config.pointerWidth / 2, 0],
         ];
         var pointerLine = d3.line().curve(d3.curveLinear);
-        console.log(pointerLine);
         var pg = svg
           .append('g')
           .data([lineData])
@@ -225,7 +225,9 @@ export class GaugeComponent implements OnInit {
           .attr('transform', 'rotate(' + config.minAngle + ')');
         update(newValue === undefined ? 0 : newValue);
       }
+
       self.gaugemap.render = render;
+
       function update(newValue, newConfiguration?) {
         if (newConfiguration !== undefined) {
           configure(newConfiguration);
@@ -238,11 +240,14 @@ export class GaugeComponent implements OnInit {
           .ease(d3.easeElastic)
           .attr('transform', 'rotate(' + newAngle + ')');
       }
-      console.log(update);
+
       self.gaugemap.update = update;
+
       configure(configuration);
+
       return self.gaugemap;
     };
+
     var powerGauge: any = gauge('#power-gauge', {
       size: 300,
       clipWidth: 300,
@@ -251,6 +256,7 @@ export class GaugeComponent implements OnInit {
       maxValue: 10,
       transitionMs: 4000,
     });
+    
     powerGauge.render(this.dynamicValue.score);
   }
 }

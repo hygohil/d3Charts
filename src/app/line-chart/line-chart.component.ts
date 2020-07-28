@@ -13,6 +13,7 @@ import moment from 'moment';
 export class LineChartComponent implements OnInit {
   selectedValue: FormControl;
   public title = 'Line Chart';
+
   data: any[] = [
     { date: new Date('2020-01-01'), value: 40 },
     { date: new Date('2020-02-04'), value: 60 },
@@ -26,6 +27,7 @@ export class LineChartComponent implements OnInit {
   ];
   months = [];
   historyData;
+
   private margin = { top: 20, right: 20, bottom: 30, left: 50 };
   private width: number;
   private height: number;
@@ -38,15 +40,16 @@ export class LineChartComponent implements OnInit {
     // configure margins and width/height of the graph
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
-    console.log('height', this.height, 'widhth', this.width);
+
     this.months = this.data.reduce((accm, dataItem) => {
       const date = moment(dataItem.date).format('MMM YYYY');
       return accm.includes(date) ? accm : [...accm, date];
     }, []);
-    console.log(this.data);
+
     this.historyData = Object.assign([], this.data);
-    // this.selectedValue.setValue(this.historyData[0].month)
+
   }
+
   public ngOnInit(): void {
     this.selectedValue = new FormControl();
     this.buildSvg();
@@ -69,20 +72,20 @@ export class LineChartComponent implements OnInit {
     // range of data configuring
     this.x = d3Scale.scaleTime().range([0, this.width]);
     this.y = d3Scale.scaleLinear().range([this.height, 0]);
-    console.log('new', this.data);
+
     this.x.domain(
       d3.extent(this.data, function (d) {
         return d.date;
       })
     );
+    
     this.y.domain([
       0,
       d3.max(this.data, function (d) {
         return d.value;
       }),
     ]);
-    console.log('new', this.x);
-    console.log('new', this.y);
+
     // Configure the X Axis
     this.svg
       .append('g')
@@ -93,6 +96,7 @@ export class LineChartComponent implements OnInit {
       // .attr('fill-opacity', 0.4)
       .attr('stroke-dasharray', `${5},${5}`)
       .attr('stroke-width', 0.3);
+
     // Configure the Y Axis
     this.svg
       .append('g')
@@ -105,16 +109,19 @@ export class LineChartComponent implements OnInit {
   }
 
   private drawLineAndPath() {
+
     let div: any = d3
       .select('body')
       .append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0);
+
     this.line = d3Shape
       .area()
       .x((d: any) => this.x(d.date))
       .y1((d: any) => this.y(d.value))
       .y0(this.height);
+
     // Configuring line path
     this.svg
       .append('path')
@@ -146,8 +153,8 @@ export class LineChartComponent implements OnInit {
         return d.value < 50
           ? '#FF5A5A'
           : d.value >= 50 && d.value < 100
-          ? '#F2C91D'
-          : '#2BCC71';
+            ? '#F2C91D'
+            : '#2BCC71';
       })
       .attr('cx', (d) => this.x(d.date))
       .attr('cy', (d) => this.y(d.value))
@@ -161,7 +168,7 @@ export class LineChartComponent implements OnInit {
     this.y = undefined;
     this.line = undefined;
     this.data = await this.historyData.filter(
-      (historyItem) => $ev === moment(historyItem.date).format('MMM YYYY')
+      (historyItem: any) => $ev === moment(historyItem.date).format('MMM YYYY')
     );
     this.buildSvg();
     this.addXandYAxis();

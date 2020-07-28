@@ -33,7 +33,7 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-               "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           },
           "configurations": {
@@ -127,6 +127,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "chatJs"
+    }
+  },
+  "defaultProject": "chatJs",
+  "cli": {
+    "analytics": "923685f1-eac3-4dcd-b225-2ca3e82ac354"
+  }
 }
