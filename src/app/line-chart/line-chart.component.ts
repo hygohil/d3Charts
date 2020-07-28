@@ -169,6 +169,9 @@ export class LineChartComponent implements OnInit {
     this.data = await this.historyData.filter(
       (historyItem: any) => $ev === moment(historyItem.date).format('MMM YYYY')
     );
+
+    d3.selectAll("g > *").remove()
+
     this.buildSvg();
     this.addXandYAxis();
     this.drawLineAndPath();
