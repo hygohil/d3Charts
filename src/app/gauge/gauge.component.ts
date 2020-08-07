@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as d3Shape from 'd3';
+
 @Component({
   selector: 'app-gauge',
   templateUrl: './gauge.component.html',
@@ -19,7 +20,7 @@ export class GaugeComponent implements OnInit {
     maxValue: 10,
   };
 
-  private margin = { top: 20, right: 20, bottom: 30, left: 50 };
+  private margin = {top: 20, right: 20, bottom: 30, left: 50};
   private width: number;
   private height: number;
   private x: any;
@@ -32,10 +33,10 @@ export class GaugeComponent implements OnInit {
       achieved: '$ 7500',
       price: '+ $1000',
       low: '$ 5k',
-      score: 2,
+      score: 3.2,
       high: '$ 10k',
       minValue: 0,
-      maxValue: 10,
+      maxValue: 100,
     };
     // configure margins and width/height of the graph
     this.width = 960 - this.margin.left - this.margin.right;
@@ -47,10 +48,10 @@ export class GaugeComponent implements OnInit {
   }
 
   draw() {
-    var self: any = this;
+    let self: any = this;
 
-    var gauge = (container, configuration) => {
-      var config = {
+    let gauge = (container, configuration) => {
+      let config = {
         size: 710,
         clipWidth: 200,
         clipHeight: 110,
@@ -64,49 +65,50 @@ export class GaugeComponent implements OnInit {
         minAngle: -90,
         maxAngle: 90,
         transitionMs: 750,
-        majorTicks: 10,
+        majorTicks: 100,
         labelFormat: d3.format('d'),
         labelInset: 10,
         arcColorFn: d3.interpolateHsl(d3.rgb('#e8e2ca'), d3.rgb('#3e6c0a')),
       };
 
-      var colorFormat = [
+      let colorFormat = [
         {
           ID: 1,
           SCORE_FROM: 0.0,
-          SCORE_TO: 3.33,
+          SCORE_TO: 3.33 * 10,
           COLOR: '#FF5A5A',
           COMPANY_ID: 3,
         },
         {
           ID: 2,
-          SCORE_FROM: 3.34,
-          SCORE_TO: 6.66,
+          SCORE_FROM: 3.34 * 10,
+          SCORE_TO: 6.66 * 10,
           COLOR: '#F2C91D', //'#EDB612',
           COMPANY_ID: 3,
         },
         {
           ID: 3,
-          SCORE_FROM: 6.67,
-          SCORE_TO: 10.0,
+          SCORE_FROM: 6.67 * 10,
+          SCORE_TO: 10.0 * 10,
           COLOR: '#2BCC71',
           COMPANY_ID: 3,
         },
-      ]
+      ];
 
-      var defaultColor = '#D3D3D3'
+      let defaultColor = '#D3D3D3'
 
-      var range = undefined;
-      var r = undefined;
-      var pointerHeadLength = undefined;
-      var value = 0;
-      var svg = undefined;
-      var arc = undefined;
-      var arc2 = undefined;
-      var scale = undefined;
-      var ticks = undefined;
-      var tickData = undefined;
-      var pointer = undefined;
+      let range = undefined;
+      let r = undefined;
+      let pointerHeadLength = undefined;
+      let value = 0;
+      let svg = undefined;
+      let arc = undefined;
+      let arc2 = undefined;
+      let scale = undefined;
+      let ticks = undefined;
+      let tickData = undefined;
+      let pointer = undefined;
+      let labelTicks = undefined;
 
       function deg2rad(deg) {
         return (deg * Math.PI) / 180;
@@ -126,6 +128,7 @@ export class GaugeComponent implements OnInit {
           .range([0, 1])
           .domain([config.minValue, config.maxValue]);
         ticks = scale.ticks(config.majorTicks);
+        labelTicks = scale.ticks(config.labelInset)
         tickData = d3.range(config.majorTicks).map(function () {
           return 1 / config.majorTicks;
         });
@@ -134,23 +137,26 @@ export class GaugeComponent implements OnInit {
           .innerRadius(115)
           .outerRadius(70)
           .startAngle(function (d: any, i) {
-            var ratio: any = d * i;
-            return deg2rad(config.minAngle + ratio * range);
+            let ratio: any = d * (i);
+            let tt = deg2rad(config.minAngle + ratio * range);
+            return tt;
           })
           .endAngle(function (d: any, i) {
-            var ratio: any = d * (i + 1);
-            return deg2rad(config.minAngle + ratio * range);
+            let ratio: any = d * (i + 1);
+            let tt = deg2rad(config.minAngle + ratio * range);
+            return tt;
           });
         arc2 = d3
           .arc()
           .innerRadius(130)
           .outerRadius(120)
           .startAngle(function (d: any, i) {
-            var ratio: any = d * i;
+            let ratio: any = d * i;
+
             return deg2rad(config.minAngle + ratio * range);
           })
           .endAngle(function (d: any, i) {
-            var ratio: any = d * (i + 1);
+            let ratio: any = d * (i + 1);
             return deg2rad(config.minAngle + ratio * range);
           });
       }
@@ -174,61 +180,66 @@ export class GaugeComponent implements OnInit {
           .attr('class', 'gauge')
           .attr('width', config.clipWidth)
           .attr('height', config.clipHeight);
-        var centerTx = centerTranslation();
-        var arcs = svg
+        let centerTx = centerTranslation();
+        let biggerArc = svg
           .append('g')
           .attr('class', 'arc')
           .attr('transform', centerTx);
-        var arcs2 = svg
+        let outerLineArc = svg
           .append('g')
           .attr('class', 'arc')
           .attr('transform', centerTx);
-        arcs
+
+        let bigArcColorFillingFunction = function (d, i) {
+          const [firstPart, secondPart, thirdPart] = colorFormat;
+          let temp = newValue * 10;
+          if (temp >= firstPart.SCORE_FROM && temp <= firstPart.SCORE_TO) {
+            return i >= firstPart.SCORE_FROM && i <= firstPart.SCORE_TO ? firstPart.COLOR : defaultColor;
+          } else if (temp >= secondPart.SCORE_FROM && temp <= secondPart.SCORE_TO) {
+            return i >= secondPart.SCORE_FROM && i <= secondPart.SCORE_TO ? secondPart.COLOR : defaultColor;
+          } else if (temp >= thirdPart.SCORE_FROM && temp <= thirdPart.SCORE_TO) {
+            return i >= thirdPart.SCORE_FROM && i <= thirdPart.SCORE_TO ? thirdPart.COLOR : defaultColor;
+          }
+        }
+
+        let outerArcColorFillingFunction = function (d, i) {
+          const [firstPart, secondPart, thirdPart] = colorFormat;
+          let temp = i;
+          if (temp >= firstPart.SCORE_FROM && temp <= firstPart.SCORE_TO) {
+            return i >= firstPart.SCORE_FROM && i <= firstPart.SCORE_TO ? firstPart.COLOR : defaultColor;
+          } else if (temp >= secondPart.SCORE_FROM && temp <= secondPart.SCORE_TO) {
+            return i >= secondPart.SCORE_FROM && i <= secondPart.SCORE_TO ? secondPart.COLOR : defaultColor;
+          } else if (temp >= thirdPart.SCORE_FROM && temp <= thirdPart.SCORE_TO) {
+            return i >= thirdPart.SCORE_FROM && i <= thirdPart.SCORE_TO ? thirdPart.COLOR : defaultColor;
+          }
+        }
+        biggerArc
           .selectAll('path')
           .data(tickData)
           .enter()
           .append('path')
-          .attr('fill', function (d, i) {
-            const [firstPart, secondPart, thirdPart] = colorFormat
-
-            // return i < 3 ? '#D3D3D3' : i >= 3 && i < 7 ? '#F2C91D' : '#D3D3D3';
-
-            if (firstPart.SCORE_FROM >= newValue || newValue <= firstPart.SCORE_TO) {
-              return firstPart.SCORE_FROM >= i || i <= firstPart.SCORE_TO ? firstPart.COLOR : defaultColor
-            }
-            else if (secondPart.SCORE_FROM >= newValue || newValue <= secondPart.SCORE_TO) {
-              return secondPart.SCORE_FROM >= i || i <= secondPart.SCORE_TO ? secondPart.COLOR : defaultColor
-            }
-            else if (thirdPart.SCORE_FROM >= newValue || newValue <= thirdPart.SCORE_TO) {
-              return thirdPart.SCORE_FROM >= i || i <= thirdPart.SCORE_TO ? thirdPart.COLOR : defaultColor
-            }
-          })
+          .attr('stroke', bigArcColorFillingFunction)
+          .attr('fill', bigArcColorFillingFunction)
           .attr('d', arc);
-        arcs2
+        outerLineArc
           .selectAll('path')
           .data(tickData)
           .enter()
           .append('path')
-          .attr('fill', function (d, i) {
-
-            const [firstPart, secondPart, thirdPart] = colorFormat
-
-            return firstPart.SCORE_FROM >= i || i <= firstPart.SCORE_TO ? firstPart.COLOR
-              : secondPart.SCORE_FROM >= i || i <= secondPart.SCORE_TO ? secondPart.COLOR
-                : thirdPart.SCORE_FROM >= i || i <= thirdPart.SCORE_TO ? thirdPart.COLOR : null
-          })
+          .attr('stroke', outerArcColorFillingFunction)
+          .attr('fill', outerArcColorFillingFunction)
           .attr('d', arc2);
-        var lg = svg
+        let lg = svg
           .append('g')
           .attr('class', 'label')
           .attr('transform', centerTx);
         lg.selectAll('text')
-          .data(ticks)
+          .data(labelTicks)
           .enter()
           .append('text')
           .attr('transform', function (d) {
-            var ratio = scale(d);
-            var newAngle = config.minAngle + ratio * range;
+            let ratio = scale(d);
+            let newAngle = config.minAngle + ratio * range;
             return (
               'rotate(' +
               newAngle +
@@ -236,17 +247,19 @@ export class GaugeComponent implements OnInit {
               (config.labelInset - r) +
               ')'
             );
+
+
           })
           .text(config.labelFormat);
-        var lineData = [
+        let lineData = [
           [config.pointerWidth / 2, 0],
           [0, -pointerHeadLength],
           [-(config.pointerWidth / 2), 0],
           [0, config.pointerTailLength],
           [config.pointerWidth / 2, 0],
         ];
-        var pointerLine = d3.line().curve(d3.curveLinear);
-        var pg = svg
+        let pointerLine = d3.line().curve(d3.curveLinear);
+        let pg = svg
           .append('g')
           .data([lineData])
           .attr('class', 'pointer')
@@ -264,8 +277,8 @@ export class GaugeComponent implements OnInit {
         if (newConfiguration !== undefined) {
           configure(newConfiguration);
         }
-        var ratio = scale(newValue);
-        var newAngle = config.minAngle + ratio * range;
+        let ratio = scale(newValue);
+        let newAngle = config.minAngle + ratio * range;
         pointer
           .transition()
           .duration(config.transitionMs)
@@ -280,7 +293,7 @@ export class GaugeComponent implements OnInit {
       return self.gaugemap;
     };
 
-    var powerGauge: any = gauge('#power-gauge', {
+    let powerGauge: any = gauge('#power-gauge', {
       size: 300,
       clipWidth: 300,
       clipHeight: 200,

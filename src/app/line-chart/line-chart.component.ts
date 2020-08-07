@@ -4,7 +4,7 @@ import * as d3Scale from 'd3';
 import * as d3Shape from 'd3';
 import * as d3Axis from 'd3';
 import { FormControl } from '@angular/forms';
-import moment from 'moment';
+import * as moment from 'moment';
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
